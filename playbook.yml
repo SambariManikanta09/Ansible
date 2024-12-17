@@ -1,0 +1,6 @@
+- name: Install Nomad and Consul
+  hosts: all
+  become: true
+  roles:
+    - nomad
+    - consul

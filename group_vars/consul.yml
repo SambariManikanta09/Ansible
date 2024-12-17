@@ -1,0 +1,35 @@
+
+# Consul version to install
+consul_version: "1.16.0"
+
+# Directory where the Consul binary will be installed
+consul_install_dir: "/usr/local/bin"
+
+# Directory for Consul configuration files
+consul_config_dir: "/etc/consul.d"
+
+# Consul systemd service file location
+consul_service_file: "/etc/systemd/system/consul.service"
+
+# Consul data directory for storing state
+consul_data_dir: "/opt/consul/data"
+
+# Consul user and group (created for running the service)
+consul_user: "consul"
+consul_group: "consul"
+
+# Address to bind Consul to (use 0.0.0.0 to bind to all interfaces)
+consul_bind_addr: "0.0.0.0"
+
+# Consul server settings
+consul_server: true
+consul_bootstrap_expect: 3
+
+# UI settings
+consul_ui: true
+
+# Retry join addresses (empty by default, to be filled with other nodes)
+consul_retry_join:
+  - "192.168.1.10"
+  - "192.168.1.11"
+  - "192.168.1.12"

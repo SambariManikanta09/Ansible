@@ -1,0 +1,35 @@
+- name: Copy Consul binary zip file
+  copy:
+    src: "consul_{{ consul_version }}_linux_amd64.zip"
+    dest: "/tmp/consul.zip"
+
+- name: Unzip Consul binary
+  unarchive:
+    src: "/tmp/consul.zip"
+    dest: "{{ consul_install_dir }}"
+    remote_src: yes
+
+- name: Ensure Consul config directory exists
+  file:
+    path: /etc/consul.d
+    state: directory
+    mode: '0755'
+
+- name: Copy Consul configuration
+  template:
+    src: "consul.hcl.j2"
+    dest: "{{ consul_service_config }}"
+    mode: '0644'
+  notify: Restart Consul
+
+- name: Install Consul systemd service
+  template:
+    src: "consul.service.j2"
+    dest: "/etc/systemd/system/consul.service"
+  notify: Restart Consul
+
+- name: Enable and start Consul service
+  systemd:
+    name: consul
+    enabled: yes
+    state: started

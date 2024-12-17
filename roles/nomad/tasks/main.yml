@@ -1,0 +1,35 @@
+- name: Copy Nomad binary zip file
+  copy:
+    src: "nomad_{{ nomad_version }}_linux_amd64.zip"
+    dest: "/tmp/nomad.zip"
+
+- name: Unzip Nomad binary
+  unarchive:
+    src: "/tmp/nomad.zip"
+    dest: "{{ nomad_install_dir }}"
+    remote_src: yes
+
+- name: Ensure Nomad config directory exists
+  file:
+    path: /etc/nomad.d
+    state: directory
+    mode: '0755'
+
+- name: Copy Nomad configuration
+  template:
+    src: "nomad.hcl.j2"
+    dest: "{{ nomad_service_config }}"
+    mode: '0644'
+  notify: Restart Nomad
+
+- name: Install Nomad systemd service
+  template:
+    src: "nomad.service.j2"
+    dest: "/etc/systemd/system/nomad.service"
+  notify: Restart Nomad
+
+- name: Enable and start Nomad service
+  systemd:
+    name: nomad
+    enabled: yes
+    state: started

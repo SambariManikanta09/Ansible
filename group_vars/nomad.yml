@@ -1,0 +1,41 @@
+# Nomad version to install
+nomad_version: "1.7.0"
+
+# Directory where the Nomad binary will be installed
+nomad_install_dir: "/usr/local/bin"
+
+# Directory for Nomad configuration files
+nomad_config_dir: "/etc/nomad.d"
+
+# Nomad systemd service file location
+nomad_service_file: "/etc/systemd/system/nomad.service"
+
+# Nomad data directory for storing state
+nomad_data_dir: "/opt/nomad/data"
+
+# Nomad user and group (created for running the service)
+nomad_user: "nomad"
+nomad_group: "nomad"
+
+# Address to bind Nomad to (use 0.0.0.0 to bind to all interfaces)
+nomad_bind_addr: "0.0.0.0"
+
+# Nomad server settings
+nomad_server: true
+nomad_bootstrap_expect: 3
+
+# Retry join addresses for Nomad cluster (add more nodes here)
+nomad_retry_join:
+  - "192.168.1.10"
+  - "192.168.1.11"
+  - "192.168.1.12"
+
+# Client settings (set 'nomad_server: false' for client-only nodes)
+nomad_client_enabled: true
+nomad_client_servers:
+  - "192.168.1.10"
+  - "192.168.1.11"
+  - "192.168.1.12"
+
+# Log level for Nomad
+nomad_log_level: "INFO"
