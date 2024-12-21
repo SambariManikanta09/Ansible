@@ -1,35 +1,84 @@
-- name: Copy Nomad binary zip file
-  copy:
-    src: "nomad_{{ nomad_version }}_linux_amd64.zip"
-    dest: "/tmp/nomad.zip"
+- name: Create Nomad group
+  group: name={{ nomad_group }} system=yes state=present
 
-- name: Unzip Nomad binary
-  unarchive:
-    src: "/tmp/nomad.zip"
-    dest: "{{ nomad_install_dir }}"
-    remote_src: yes
+- name: Create Nomad user
+  user: >
+    name={{ nomad_user }}
+    shell=/bin/false
+    createhome=no
+    group={{ nomad_group }}
+    system=yes
+    state=present
 
-- name: Ensure Nomad config directory exists
+- name: Download Nomad
+  get_url: >
+    url={{ nomad_url }}
+    dest={{ nomad_download_dir }}/nomad{{ nomad_version }}.zip
+
+- name: Ensure unzip is installed
+  yum: name=unzip state=installed
+
+- name: Unzip Nomad to installation directory
+  command: unzip -o {{ nomad_download_dir }}/nomad{{ nomad_version }}.zip -d {{ nomad_install_dir }}
+  args:
+    creates: "{{ nomad_install_dir }}/nomad{{ nomad_version }}"
+
+- name: Set nomad to link to installed version
+  file: >
+    src="{{ nomad_install_dir }}/nomad"
+    dest="{{ nomad_install_dir }}/nomad{{ nomad_version }}"
+    state=link
+
+- name: Create Nomad configuration directory
+  file: >
+    path={{ nomad_config_dir }}
+    owner={{ nomad_user }}
+    group={{ nomad_group }}
+    mode=0755
+    state=directory
+
+- name: Create Nomad configuration directory
   file:
-    path: /etc/nomad.d
+    path: "{{ nomad_config_dir }}"
     state: directory
-    mode: '0755'
+    owner: "{{ nomad_user }}"
+    group: "{{ nomad_group }}"
 
-- name: Copy Nomad configuration
-  template:
-    src: "nomad.hcl.j2"
-    dest: "{{ nomad_service_config }}"
-    mode: '0644'
-  notify: Restart Nomad
+- name: Create Nomad data directory
+  file: >
+    path={{ nomad_data_dir }}
+    owner={{ nomad_user }}
+    group={{ nomad_group }}
+    mode=0755
+    state=directory
 
-- name: Install Nomad systemd service
-  template:
-    src: "nomad.service.j2"
-    dest: "/etc/systemd/system/nomad.service"
-  notify: Restart Nomad
+- name: Make sure nomad.service does not exist
+  file: >
+    state=absent
+    path=/etc/systemd/system/nomad.service
 
-- name: Enable and start Nomad service
-  systemd:
-    name: nomad
-    enabled: yes
-    state: started
+- name: Create nomad.service configuration
+  template: >
+    src=nomad.service.j2
+    dest=/etc/systemd/system/nomad.service
+    owner=root
+    group=root
+    mode=0644
+  notify: restart nomad
+
+- name: Ensure Nomad service is started and enabled on boot
+  service: name={{ nomad_service_name }} state=started enabled=yes
+
+- name: Generate self-signed TLS certificates
+  command: >
+    openssl req -newkey rsa:2048 -nodes -keyout /etc/nomad.d/tls/server_key.pem
+    -x509 -days 365 -out /etc/nomad.d/tls/server_cert.pem
+    -subj "/C=US/ST=State/L=City/O=Organization/OU=IT/CN={{ inventory_hostname }}"
+
+- name: Copy CA certificate
+  copy:
+    src: files/ca_cert.pem
+    dest: /etc/nomad.d/tls/ca_cert.pem
+    owner: nomad
+    group: nomad
+    mode: "0644"

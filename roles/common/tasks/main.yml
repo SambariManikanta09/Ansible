@@ -1,0 +1,22 @@
+---
+- name: Install common dependencies
+  become: true
+  block:
+    - name: Ensure required packages are installed
+      dnf:
+        name:
+          - unzip
+          - wget
+          - curl
+          - firewalld
+          - systemd
+          - java-17-openjdk
+          - java-21-openjdk
+        state: present
+        update_cache: true
+
+    - name: Start and enable firewalld
+      systemd:
+        name: firewalld
+        enabled: true
+        state: started

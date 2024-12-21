@@ -1,6 +1,27 @@
+
 - name: Install Nomad and Consul
   hosts: all
   become: true
-  roles:
-    - nomad
-    - consul
+  vars_files:
+    - group_vars/nomad.yml
+    - group_vars/consul.yml
+  tasks:
+    - name: Include common dependencies for all nodes
+      include_role:
+        name: common
+      when: inventory_hostname in groups['vms']
+
+    - name: Include common dependencies for all nodes
+      include_role:
+        name: docker
+      when: inventory_hostname in groups['nomad_clients']
+      
+    - name: Include Nomad setup tasks only on nomad_servers
+      include_role:
+        name: nomad
+      when: inventory_hostname in groups['nomad_servers'] or inventory_hostname in groups['nomad_clients']
+
+    # - name: Include Consul setup tasks only on consul_servers
+    #   include_role:
+    #     name: consul
+    #   when: inventory_hostname in groups['consul_servers']

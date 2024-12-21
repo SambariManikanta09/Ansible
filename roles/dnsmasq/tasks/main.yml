@@ -1,0 +1,36 @@
+---
+- name: Install dnsmasq
+  package:
+    name: dnsmasq
+    state: present
+
+- name: Ensure dnsmasq is enabled and running
+  service:
+    name: "{{ dnsmasq_service_name }}"
+    state: started
+    enabled: yes
+
+- name: Create dnsmasq configuration directory
+  file:
+    path: "{{ dnsmasq_config_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Configure dnsmasq
+  template:
+    src: dnsmasq.conf.j2
+    dest: "{{ dnsmasq_config_dir }}/consul.conf"
+    mode: '0644'
+
+- name: Create resolver file for dnsmasq
+  copy:
+    content: |
+      nameserver 127.0.0.1
+      port {{ consul_dns_port }}
+    dest: "{{ dnsmasq_resolver_file }}"
+    mode: '0644'
+
+- name: Restart dnsmasq service
+  service:
+    name: "{{ dnsmasq_service_name }}"
+    state: restarted

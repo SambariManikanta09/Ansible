@@ -1,0 +1,46 @@
+---
+- name: Install CNI Plugin for Nomad Cluster
+  hosts: all
+  become: yes
+
+  vars:
+    cni_plugin_name: calico
+    cni_plugin_version: v3.21.0
+
+  tasks:
+  - name: Update package manager
+    apt:
+      update_cache: yes
+
+  - name: Install dependencies
+    apt:
+      name:
+        - iptables
+        - iproute2
+      state: present
+
+  - name: Download CNI plugin
+    get_url:
+      url: https://github.com/containernetworking/plugins/releases/download/{{ cni_plugin_version }}/{{ cni_plugin_name }}.tgz
+      dest: /tmp/cni-plugins-{{ cni_plugin_version }}.tgz
+
+  - name: Extract and install CNI plugin
+    unarchive:
+      src: /tmp/cni-plugins-{{ cni_plugin_version }}.tgz
+      dest: /opt/cni/bin/
+      remote_src: yes
+
+  - name: Configure Nomad to use CNI plugin
+    lineinfile:
+      path: /etc/nomad.d/config.hcl
+      regexp: 'cni-bin-dir = "/opt/cni/bin/"'
+      line: 'cni-bin-dir = "/opt/cni/bin/"'
+
+    notify:
+      - restart nomad service
+
+  handlers:
+  - name: restart nomad service
+    systemd:
+      name: nomad
+      state: restarted

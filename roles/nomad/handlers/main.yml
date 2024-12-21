@@ -1,4 +1,5 @@
-- name: Restart Nomad
-  systemd:
-    name: nomad
-    state: restarted
+- name: restart nomad
+  service: name={{ nomad_service_name }} state=restarted
+
+- name: reload nomad
+  service: name={{ nomad_service_name }} state=reloaded

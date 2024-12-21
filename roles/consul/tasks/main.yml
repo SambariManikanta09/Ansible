@@ -9,27 +9,34 @@
     dest: "{{ consul_install_dir }}"
     remote_src: yes
 
-- name: Ensure Consul config directory exists
+- name: Create Consul configuration directory
   file:
-    path: /etc/consul.d
+    path: "{{ consul_config_dir }}"
     state: directory
-    mode: '0755'
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
 
-- name: Copy Consul configuration
+- name: Deploy Consul configuration (server or client)
   template:
-    src: "consul.hcl.j2"
-    dest: "{{ consul_service_config }}"
-    mode: '0644'
-  notify: Restart Consul
-
-- name: Install Consul systemd service
-  template:
-    src: "consul.service.j2"
-    dest: "/etc/systemd/system/consul.service"
-  notify: Restart Consul
+    src: "{{ 'consul_server.hcl.j2' if consul_server else 'consul_client.hcl.j2' }}"
+    dest: "{{ consul_config_dir }}/consul.hcl"
 
 - name: Enable and start Consul service
   systemd:
     name: consul
     enabled: yes
     state: started
+
+- name: Generate self-signed TLS certificates
+  command: >
+    openssl req -newkey rsa:2048 -nodes -keyout /etc/consul.d/tls/server_key.pem
+    -x509 -days 365 -out /etc/consul.d/tls/server_cert.pem
+    -subj "/C=US/ST=State/L=City/O=Organization/OU=IT/CN={{ inventory_hostname }}"
+
+- name: Copy CA certificate
+  copy:
+    src: files/ca_cert.pem
+    dest: /etc/consul.d/tls/ca_cert.pem
+    owner: consul
+    group: consul
+    mode: "0644"

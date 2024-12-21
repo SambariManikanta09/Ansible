@@ -1,41 +1,72 @@
 # Nomad version to install
-nomad_version: "1.7.0"
+nomad_version: "1.9.4"
+
+# Nomad Downlaod url 
+nomad_url: https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64.zip
+
+#temporary download location
+nomad_download_dir: /tmp
+
+# Directory for Nomad configuration files
+nomad_config_dir: /etc/nomad.d
+
+# Nomad log file
+nomad_log_file: /etc/nomad.d/nomad.log
+
+# Systemd Service Name
+nomad_service_name: nomad
+
+# Encryption key used my nomad servers - to secure the identities 
+# python3 -c "import os; print(os.urandom(32).hex())"
+nomad_encrypt_key: 56a1726a71b6a5da8a661aae21ea9370f66760fc9e0b74c371e13a083b8ae94c
 
 # Directory where the Nomad binary will be installed
 nomad_install_dir: "/usr/local/bin"
-
-# Directory for Nomad configuration files
-nomad_config_dir: "/etc/nomad.d"
 
 # Nomad systemd service file location
 nomad_service_file: "/etc/systemd/system/nomad.service"
 
 # Nomad data directory for storing state
-nomad_data_dir: "/opt/nomad/data"
+nomad_data_dir: "/etc/nomad.d/data"
+
+# Nomad plugin direcotry 
+nomad_plugin_dir: /etc/nomad.d/plugins
 
 # Nomad user and group (created for running the service)
 nomad_user: "nomad"
 nomad_group: "nomad"
 
+nomad_clients_java_versions:
+  "17": "/usr/lib/jvm/java-17-openjdk"
+  "21": "/usr/lib/jvm/java-21-openjdk"
+
 # Address to bind Nomad to (use 0.0.0.0 to bind to all interfaces)
 nomad_bind_addr: "0.0.0.0"
+
+# Ports for Nomad communication
+nomad_http_port: 4646
+nomad_rpc_port: 4647
+nomad_serf_port: 4648
 
 # Nomad server settings
 nomad_server: true
 nomad_bootstrap_expect: 3
 
+# Specify the datacenter the agent is a member of
+nomad_datacenter: dc1
+
 # Retry join addresses for Nomad cluster (add more nodes here)
 nomad_retry_join:
-  - "192.168.1.10"
-  - "192.168.1.11"
-  - "192.168.1.12"
+  - "172.21.179.11"
+  - "172.21.179.12"
+  - "172.21.179.13"
 
 # Client settings (set 'nomad_server: false' for client-only nodes)
 nomad_client_enabled: true
 nomad_client_servers:
-  - "192.168.1.10"
-  - "192.168.1.11"
-  - "192.168.1.12"
+  - "172.21.179.21"
+  - "172.21.179.22"
+  - "172.21.179.23"
 
 # Log level for Nomad
 nomad_log_level: "INFO"

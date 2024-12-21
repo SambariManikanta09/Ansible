@@ -1,0 +1,67 @@
+name = "{{ inventory_hostname }}"
+
+# Directory to store agent state
+data_dir = "{{ nomad_data_dir }}"
+plugin_dir = "{{ nomad_plugin_dir }}"
+
+# Address to bind Nomad agent for networking
+bind_addr = "{{ nomad_bind_addr }}"
+
+# Ports configuration
+ports {
+  http = {{ nomad_http_port }}
+  rpc  = {{ nomad_rpc_port }}
+  serf = {{ nomad_serf_port }}
+}
+
+# TLS configuration
+tls {
+  http = true
+  rpc  = true
+
+  ca_file   = "/etc/nomad.d/tls/ca_cert.pem"
+  cert_file = "/etc/nomad.d/tls/server_cert.pem"
+  key_file  = "/etc/nomad.d/tls/server_key.pem"
+}
+
+# Datacenter configuration
+datacenter = "{{ nomad_datacenter }}"
+
+# Logging configuration
+log_level = "INFO"
+log_file  = "/etc/nomad.d/nomad.log"
+
+# Server & Raft configuration
+server {
+  enabled          = true
+  bootstrap_expect = {{ nomad_bootstrap_expect }}
+  encrypt = "{{ nomad_encrypt_key }}"
+  server_join {
+    retry_join = {{ nomad_retry_join | to_json }}
+  }
+}
+
+# ACL configuration
+acl {
+  enabled = true
+  token_ttl = "30s"
+  policy_ttl = "60s"
+  role_ttl = "60s"
+}
+
+# Consul integration
+consul {
+  address = "https://127.0.0.1:8501"
+  auto_advertise = true
+  server_auto_join = true
+  server_service_name = "nomad-server"
+}
+
+# Telemetry for Prometheus/Grafana monitoring
+telemetry {
+  prometheus_metrics = true
+  publish_allocation_metrics = true
+  publish_node_metrics = true
+  disable_hostname = false
+  collection_interval = "1s"
+}

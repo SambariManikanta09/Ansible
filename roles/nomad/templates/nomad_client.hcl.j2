@@ -1,0 +1,69 @@
+# Data directory for Nomad
+data_dir = "/etc/nomad.d/data"
+
+# Address Nomad should bind to (use node IP)
+bind_addr = "{{ ansible_default_ipv4.address }}"
+
+# Client configuration
+client {
+  enabled = true
+  server_join {
+    retry_join = {{ nomad_retry_join | to_json }}
+  }
+
+  # Additional options for the client
+  options = {
+    "env.JAVA_HOME" = "{{ nomad_clients_java_versions[java_version] }}"
+    "driver.raw_exec.enable" = "true"
+    "driver.docker.enable" = "true"
+    "driver.docker.bin_dir" = "/usr/bin"
+  }
+}
+
+# Environment variables
+env {
+  JAVA_HOME = "{{ nomad_clients_java_versions[java_version] }}"
+}
+
+# TLS configuration for secure communication
+tls {
+  http = true
+  rpc  = true
+  ca_file = "/etc/ssl/nomad_ca.crt"
+  cert_file = "/etc/ssl/nomad.crt"
+  key_file = "/etc/ssl/nomad.key"
+
+  # Enable client certificate verification
+  verify_https_client = true
+}
+
+# Telemetry configuration for monitoring
+telemetry {
+  prometheus_metrics = true
+  publish_allocation_metrics = true
+  publish_node_metrics = true
+  disable_hostname = false
+  collection_interval = "1s"
+}
+
+
+
+# Logging configuration for Prometheus/Grafana compatibility
+log_level = "{{ nomad_log_level | default('INFO') }}"
+log_file = "/var/log/nomad/client.log"
+log_format = "json"
+
+plugin "cni" {
+config {
+  cni_path = "/opt/cni/bin"
+  }
+}
+
+# Consul integration
+consul {
+  address = "https://127.0.0.1:8501"
+  auto_advertise = true
+  server_auto_join = true
+  server_service_name = "nomad-server"
+}
+

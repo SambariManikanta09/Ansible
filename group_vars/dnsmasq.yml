@@ -1,0 +1,6 @@
+dnsmasq_config_dir: "/etc/dnsmasq.d"
+dnsmasq_service_name: "dnsmasq"
+consul_dns_port: 8600
+dnsmasq_resolver_file: "/etc/resolv.dnsmasq.conf"
+nomad_consul_servers:
+  - "127.0.0.1"  # Update with Consul server IPs as needed

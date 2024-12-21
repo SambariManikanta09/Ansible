@@ -1,0 +1,20 @@
+jbkslrmauat01	UAT	Running	172.21.179.11	Oracle Linux 9 (64-bit)	Master Node1	Nomad Server
+jbkslrmauat02	UAT	Running	172.21.179.12	Oracle Linux 9 (64-bit)	Master Node2	Nomad Server
+jbkslrmauat03	UAT	Running	172.21.179.13	Oracle Linux 9 (64-bit)	Master Node3	Nomad Server
+jbkslrwkuat01	UAT	Running	172.21.179.21	Oracle Linux 9 (64-bit)	Worker Node1	Az1 Service
+jbkslrwkuat02	UAT	Running	172.21.179.22	Oracle Linux 9 (64-bit)	Worker Node2	Az1 Service
+jbkslrwkuat03	UAT	Running	172.21.179.23	Oracle Linux 9 (64-bit)	Worker Node3	Az1 Service
+jbkslcmduat01	UAT	Running	172.21.179.15	Oracle Linux 9 (64-bit)	Camunda Client	workflow Engine
+
+
+firewall-cmd --permanent --add-port=4646/tcp
+firewall-cmd --permanent --add-port=4647/tcp
+firewall-cmd --permanent --add-port=8300/tcp
+firewall-cmd --permanent --add-port=8301/tcp
+firewall-cmd --permanent --add-port=8301/udp
+firewall-cmd --permanent --add-port=8500/tcp
+firewall-cmd --permanent --add-port=8600/tcp
+firewall-cmd --permanent --add-port=8600/udp
+
+firewall-cmd --reload
+ 
