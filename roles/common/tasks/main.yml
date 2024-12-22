@@ -21,26 +21,21 @@
         enabled: true
         state: started
 
-    - name: Configure Firewall for Nomad
-      hosts: all
-      become: yes
+    - name: Add necessary ports to firewall
+      firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        state: present
+      loop:
+        - "4646/tcp"
+        - "4647/tcp"
+        - "8300/tcp"
+        - "8301/tcp"
+        - "8301/udp"
+        - "8500/tcp"
+        - "8600/tcp"
+        - "8600/udp"
 
-      tasks:
-        - name: Add necessary ports to firewall
-          firewalld:
-            port: "{{ item }}"
-            permanent: yes
-            state: present
-          loop:
-            - "4646/tcp"
-            - "4647/tcp"
-            - "8300/tcp"
-            - "8301/tcp"
-            - "8301/udp"
-            - "8500/tcp"
-            - "8600/tcp"
-            - "8600/udp"
-
-        - name: Reload firewall to apply changes
-          firewalld:
-            state: reloaded
+    - name: Reload firewall to apply changes
+      firewalld:
+        state: reloaded
