@@ -1,0 +1,12 @@
+[Unit]
+Description=Consul Service
+After=network.target
+
+[Service]
+Type=simple
+User={{ consul_user }}
+ExecStart={{ consul_install_dir }}/consul agent agent -config-dir=/etc/consul.d
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -66,6 +66,27 @@
     mode=0644
   notify: restart nomad
 
+- name: Create Nomad server configuration file
+  template: >
+    src=nomad_server.hcl.j2
+    dest={{ nomad_config_dir }}/server.hcl
+    owner={{ nomad_user }}
+    group={{ nomad_group }}
+    mode=0644
+  notify: restart nomad
+  when: inventory_hostname in groups['nomad_servers']
+
+
+- name: Create Nomad client configuration file
+  template: >
+    src=nomad_client.hcl.j2
+    dest={{ nomad_config_dir }}/client.hcl
+    owner={{ nomad_user }}
+    group={{ nomad_group }}
+    mode=0644
+  notify: restart nomad
+  when: inventory_hostname in groups['nomad_clients']
+
 - name: Ensure Nomad service is started and enabled on boot
   service: name={{ nomad_service_name }} state=started enabled=yes
 
