@@ -100,6 +100,7 @@
     openssl req -newkey rsa:2048 -nodes -keyout /etc/nomad.d/tls/server_key.pem
     -x509 -days 365 -out /etc/nomad.d/tls/server_cert.pem
     -subj "/C=US/ST=State/L=City/O=Organization/OU=IT/CN={{ inventory_hostname }}"
+    -CAfiles files/ca_cert.pem -CAkey files/ca_key.pem -set_serial 01
 
 - name: Copy CA certificate
   copy:
