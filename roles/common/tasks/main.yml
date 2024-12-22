@@ -22,8 +22,9 @@
         state: started
 
     - name: Add necessary ports to firewall
-      firewalld:
+      ansible.posix.firewalld:
         port: "{{ item }}"
+        zone: public
         permanent: yes
         state: present
       loop:
@@ -35,6 +36,7 @@
         - "8500/tcp"
         - "8600/tcp"
         - "8600/udp"
+
 
     - name: Reload firewall to apply changes
       firewalld:
