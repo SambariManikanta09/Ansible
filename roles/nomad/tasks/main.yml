@@ -87,8 +87,13 @@
   notify: restart nomad
   when: inventory_hostname in groups['nomad_clients']
 
-- name: Ensure Nomad service is started and enabled on boot
-  service: name={{ nomad_service_name }} state=started enabled=yes
+- name: Ensure /etc/nomad.d/tls/ directory exists
+  file:
+    path: /etc/nomad.d/tls/
+    state: directory
+    owner: nomad
+    group: nomad
+    mode: '0755'  
 
 - name: Generate self-signed TLS certificates
   command: >
@@ -103,3 +108,6 @@
     owner: nomad
     group: nomad
     mode: "0644"
+
+- name: Ensure Nomad service is started and enabled on boot
+  service: name={{ nomad_service_name }} state=started enabled=yes
