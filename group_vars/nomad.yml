@@ -16,9 +16,11 @@ nomad_log_file: /etc/nomad.d/nomad.log
 # Systemd Service Name
 nomad_service_name: nomad
 
-# Encryption key used my nomad servers - to secure the identities 
-# python3 -c "import os; print(os.urandom(32).hex())"
-nomad_encrypt_key: 56a1726a71b6a5da8a661aae21ea9370f66760fc9e0b74c371e13a083b8ae94c
+# Encryption key used my nomad servers - to secure the identities
+# Generate a 32-byte (256-bit) base64-encoded key
+# openssl rand -base64 32
+# echo "<key>" | base64 -d | wc -c
+nomad_encrypt_key: 
 
 # Directory where the Nomad binary will be installed
 nomad_install_dir: "/usr/local/bin"
