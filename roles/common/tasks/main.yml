@@ -15,6 +15,29 @@
         state: present
         update_cache: true
 
+    - name: Ensure Java 17 directory exists
+      file:
+        path: "{{ nomad_clients_java_versions['17'] }}"
+        state: directory
+
+    - name: Create symbolic link for Java 17
+      file:
+        path: "{{ nomad_clients_java_versions['17'] }}"
+        src: "{{ lookup('first_found', 'files=/usr/lib/jvm/java-17-openjdk-*', ignore_errors=True) }}"
+        state: link
+
+    - name: Ensure Java 21 directory exists
+      file:
+        path: "{{ nomad_clients_java_versions['21'] }}"
+        state: directory
+
+    
+    - name: Create symbolic link for Java 21
+      file:
+        path: "{{ nomad_clients_java_versions['21'] }}"
+        src: "{{ lookup('first_found', 'files=/usr/lib/jvm/java-21-openjdk-*', ignore_errors=True) }}"
+        state: link
+
     - name: Start and enable firewalld
       systemd:
         name: firewalld

@@ -17,6 +17,7 @@ client {
   # Additional options for the client
   options = {
     "driver.allowlist" = "exec,java,raw_exec,docker"
+    "java.home" = "{{ nomad_clients_java_versions[java_version] }}"
   }
 }
 
