@@ -11,10 +11,10 @@
         name: common
       when: inventory_hostname in groups['vms']
 
-    # - name: Include common dependencies for all nodes
-    #   include_role:
-    #     name: docker
-    #   when: inventory_hostname in groups['nomad_clients']
+    - name: Install docker for nomad-clients
+      include_role:
+        name: docker
+      when: inventory_hostname in groups['nomad_clients']
       
     - name: Include Nomad setup tasks only on nomad_servers
       include_role:

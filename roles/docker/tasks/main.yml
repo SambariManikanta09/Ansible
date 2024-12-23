@@ -1,48 +1,41 @@
-# Set up docker to use as drive for nomad
-- name: Make sure docker yum repo does not exist
-  file: >
-    state=absent
-    path=/etc/yum.repos.d/docker.repo
+---
+- name: Install Docker on RHEL 9
+  hosts: all
+  become: true
+  tasks:
+    - name: Add the Docker group
+      group:
+        name: docker
+        state: present
 
-- name: Add docker yum repo
-  template: >
-    src=docker.repo
-    dest=/etc/yum.repos.d/docker.repo
+    - name: Add the user to the Docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
 
-- name: Ensure docker is installed
-  yum: name=docker-engine state=installed
+    - name: Install dnf-utils package
+      yum:
+        name: dnf-utils
+        state: present
 
-- name: Make sure docker.service does not exist
-  file: >
-    state=absent
-    path=/etc/systemd/system/docker.service
+    - name: Add Docker's official repository
+      command: >
+        dnf config-manager --add-repo
+        https://download.docker.com/linux/centos/docker-ce.repo
+      args:
+        creates: /etc/yum.repos.d/docker-ce.repo
 
-- name: Make sure docker.service does not exist
-  file: >
-    state=absent
-    path=/etc/default/docker
+    - name: Install Docker packages
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
 
-# - name: Create default docker daemon options
-#   template: >
-#     src=docker_daemon_config.j2
-#     dest=/etc/default/docker
-#     owner=root
-#     group=root
-#     mode=0644
-#   notify: restart docker
-
-# Customize docker setup because default devmapper storage backend has issues with centos
-# see http://www.projectatomic.io/blog/2015/06/notes-on-fedora-centos-and-docker-storage-drivers/
-# By default, the yum docker-engine does not pick up any conf files so I decided to overwrite the
-# provided docker.service file
-- name: Create docker options
-  template: >
-    src=docker.service.j2
-    dest=/etc/systemd/system/docker.service
-    owner=root
-    group=root
-    mode=0644
-  notify: restart docker
-
-- name: Ensure Docker service is started and enabled on boot
-  service: name=docker state=started enabled=yes
+    - name: Start Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: true
