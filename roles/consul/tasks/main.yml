@@ -17,13 +17,18 @@
 - name: Download Consul
   get_url: >
     url={{ consul_url }}
-    dest={{ consul_download_dir }}/consul.zip
+    dest={{ consul_download_dir }}/consul{{ consul_version }}.zip
 
 - name: Unzip Consul to installation directory
-  command: unzip {{ consul_download_dir }}/consul.zip -d {{ consul_install_dir }}
+  command: unzip -o {{ consul_download_dir }}/consul{{ consul_version }}.zip -d {{ consul_install_dir }}
   args:
-    creates: "{{ consul_install_dir }}/consul"
-  tags: consul
+    creates: "{{ consul_install_dir }}/consul{{ consul_version }}"
+
+- name: Set consul to link to installed version
+  file: >
+    src="{{ consul_install_dir }}/consul"
+    dest="{{ consul_install_dir }}/consul{{ consul_version }}"
+    state=link
 
 - name: Create Consul configuration directory
   file: >
