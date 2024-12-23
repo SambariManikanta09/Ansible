@@ -1,4 +1,3 @@
----
 - name: Install Docker on RHEL 9
   hosts: all
   become: true
