@@ -5,6 +5,9 @@ consul_version: "1.20.1"
 # Consul Download url
 consul_url: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip
 
+#temporary download location
+consul_download_dir: /tmp
+
 # Directory where the Consul binary will be installed
 consul_install_dir: "/usr/local/bin"
 
