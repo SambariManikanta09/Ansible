@@ -21,7 +21,7 @@ consul_service_name: consul
 consul_service_file: "/etc/systemd/system/consul.service"
 
 # Consul data directory for storing state
-consul_data_dir: "/opt/consul/data"
+consul_data_dir: "/etc/consul/data"
 
 # Consul user and group (created for running the service)
 consul_user: "consul"

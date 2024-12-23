@@ -12,7 +12,6 @@
           - systemd
           - java-17-openjdk
           - java-21-openjdk
-          - docker
         state: present
         update_cache: true
 

@@ -28,7 +28,7 @@ ports {
 datacenter = "{{ nomad_datacenter }}"
 
 # Logging configuration
-log_level = {{ nomad_log_level }}
+log_level = "{{ nomad_log_level | default('INFO') }}"
 log_file  = "/etc/nomad.d/nomad.log"
 
 # Server & Raft configuration

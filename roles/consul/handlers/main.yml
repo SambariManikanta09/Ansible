@@ -3,3 +3,6 @@
 
 - name: reload nomad
   service: name={{ consul_service_name }} state=reloaded
+
+- name: Reload systemd
+  command: systemctl daemon-reload

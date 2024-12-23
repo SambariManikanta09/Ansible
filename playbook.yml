@@ -21,7 +21,7 @@
         name: nomad
       when: inventory_hostname in groups['nomad_servers'] or inventory_hostname in groups['nomad_clients']
 
-    # - name: Include Consul setup tasks only on consul_servers
-    #   include_role:
-    #     name: consul
-    #   when: inventory_hostname in groups['consul_servers'] or inventory_hostname in groups['consul_clients']
+    - name: Include Consul setup tasks only on consul_servers
+      include_role:
+        name: consul
+      when: inventory_hostname in groups['consul_servers'] or inventory_hostname in groups['consul_clients']
