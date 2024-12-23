@@ -1,40 +1,37 @@
-- name: Install Docker on RHEL 9
-  hosts: all
-  become: true
-  tasks:
-    - name: Add the Docker group
-      group:
-        name: docker
-        state: present
 
-    - name: Add the user to the Docker group
-      user:
-        name: "{{ ansible_user }}"
-        groups: docker
-        append: yes
+- name: Add the Docker group
+  group:
+    name: docker
+    state: present
 
-    - name: Install dnf-utils package
-      yum:
-        name: dnf-utils
-        state: present
+- name: Add the user to the Docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
 
-    - name: Add Docker's official repository
-      command: >
-        dnf config-manager --add-repo
-        https://download.docker.com/linux/centos/docker-ce.repo
-      args:
-        creates: /etc/yum.repos.d/docker-ce.repo
+- name: Install dnf-utils package
+  yum:
+    name: dnf-utils
+    state: present
 
-    - name: Install Docker packages
-      yum:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-        state: latest
+- name: Add Docker's official repository
+  command: >
+    dnf config-manager --add-repo
+    https://download.docker.com/linux/centos/docker-ce.repo
+  args:
+    creates: /etc/yum.repos.d/docker-ce.repo
 
-    - name: Start Docker service
-      systemd:
-        name: docker
-        state: started
-        enabled: true
+- name: Install Docker packages
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+
+- name: Start Docker service
+  systemd:
+    name: docker
+    state: started
+    enabled: true
