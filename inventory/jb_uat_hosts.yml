@@ -46,16 +46,22 @@ all:
       hosts:
         consul-server-1:
           ansible_host: 172.21.179.11
+          role_type: "server"
         consul-server-2:
           ansible_host: 172.21.179.12
+          role_type: "server"
         consul-server-3:
           ansible_host: 172.21.179.13
+          role_type: "server"
 
     consul_clients:
       hosts:
         consul-client-1:
           ansible_host: 172.21.179.21
+          role_type: "client"
         consul-client-2:
           ansible_host: 172.21.179.22
+          role_type: "client"
         consul-client-3:
           ansible_host: 172.21.179.23
+          role_type: "client"
