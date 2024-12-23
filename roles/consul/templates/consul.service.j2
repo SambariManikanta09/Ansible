@@ -5,7 +5,11 @@ After=network.target
 [Service]
 Type=simple
 User={{ consul_user }}
-ExecStart={{ consul_install_dir }}/consul agent agent -config-dir=/etc/consul.d
+{% if role_type == 'client' %}
+ExecStart={{ consul_install_dir }}/consul agent -config {{ consul_config_dir }}/client.hcl
+{% else %}
+ExecStart={{ consul_install_dir }}/consul agent -config {{ consul_config_dir }}/server.hcl
+{% endif %}
 Restart=on-failure
 
 [Install]
