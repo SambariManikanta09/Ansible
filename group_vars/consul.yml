@@ -11,6 +11,9 @@ consul_install_dir: "/usr/local/bin"
 # Directory for Consul configuration files
 consul_config_dir: "/etc/consul.d"
 
+# Systemd Service Name
+consul_service_name: consul
+
 # Consul systemd service file location
 consul_service_file: "/etc/systemd/system/consul.service"
 
@@ -20,6 +23,14 @@ consul_data_dir: "/opt/consul/data"
 # Consul user and group (created for running the service)
 consul_user: "consul"
 consul_group: "consul"
+
+# Encryption key used my consul servers - to secure the identities
+# Generate a 32-byte (256-bit) base64-encoded key
+# openssl rand -base64 32
+# echo "<key>" | base64 -d | wc -c
+consul_encryption_key: 
+
+consul_advertise_addr: 
 
 # Address to bind Consul to (use 0.0.0.0 to bind to all interfaces)
 consul_bind_addr: "0.0.0.0"

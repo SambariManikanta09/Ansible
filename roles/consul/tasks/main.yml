@@ -1,42 +1,71 @@
-- name: Copy Consul binary zip file
-  copy:
-    src: "consul_{{ consul_version }}_linux_amd64.zip"
-    dest: "/tmp/consul.zip"
 
-- name: Unzip Consul binary
-  unarchive:
-    src: "/tmp/consul.zip"
-    dest: "{{ consul_install_dir }}"
-    remote_src: yes
+- name: Create Consul group
+  group: name={{ consul_group }} system=yes state=present
+
+- name: Create Consul user
+  user: >
+    name={{ consul_user }}
+    shell=/bin/false
+    createhome=no
+    group={{ consul_group }}
+    system=yes
+    state=present
+
+- name: Ensure unzip is installed (required by unarchive module)
+  yum: name=unzip state=installed
+
+- name: Download Consul
+  get_url: >
+    url={{ consul_url }}
+    dest={{ consul_download_dir }}/consul.zip
+
+- name: Unzip Consul to installation directory
+  command: unzip {{ consul_download_dir }}/consul.zip -d {{ consul_install_dir }}
+  args:
+    creates: "{{ consul_install_dir }}/consul"
+  tags: consul
 
 - name: Create Consul configuration directory
-  file:
-    path: "{{ consul_config_dir }}"
-    state: directory
-    owner: "{{ consul_user }}"
-    group: "{{ consul_group }}"
+  file: >
+    path={{ consul_config_dir }}
+    owner={{ consul_user }}
+    group={{ consul_group }}
+    mode=0755
+    state=directory
 
-- name: Deploy Consul configuration (server or client)
-  template:
-    src: "{{ 'consul_server.hcl.j2' if consul_server else 'consul_client.hcl.j2' }}"
-    dest: "{{ consul_config_dir }}/consul.hcl"
+- name: If consul.service configuration already exists, remove it
+  file: >
+    state=absent
+    path=/etc/systemd/system/consul.service
 
-- name: Enable and start Consul service
-  systemd:
-    name: consul
-    enabled: yes
-    state: started
+- name: Create consul.service configuration
+  template: >
+    src=consul.service.j2
+    dest=/etc/systemd/system/consul.service
+    owner=root
+    group=root
+    mode=0644
+  notify: restart consul
 
-- name: Generate self-signed TLS certificates
-  command: >
-    openssl req -newkey rsa:2048 -nodes -keyout /etc/consul.d/tls/server_key.pem
-    -x509 -days 365 -out /etc/consul.d/tls/server_cert.pem
-    -subj "/C=US/ST=State/L=City/O=Organization/OU=IT/CN={{ inventory_hostname }}"
+- name: Create Consul server configuration file
+  template: >
+    src=consul_server.hcl.j2
+    dest={{ consul_config_dir }}/server.hcl
+    owner={{ consul_user }}
+    group={{ consul_group }}
+    mode=0644
+  notify: restart consul
+  when: inventory_hostname in groups['consul_servers']
 
-- name: Copy CA certificate
-  copy:
-    src: files/ca_cert.pem
-    dest: /etc/consul.d/tls/ca_cert.pem
-    owner: consul
-    group: consul
-    mode: "0644"
+- name: Create Consul client configuration file
+  template: >
+    src=consul_client.hcl.j2
+    dest={{ consul_config_dir }}/client.hcl
+    owner={{ consul_user }}
+    group={{ consul_group }}
+    mode=0644
+  notify: restart consul
+  when: inventory_hostname in groups['consul_clients']
+
+- name: Ensure Consul service is started and enabled on boot
+  service: name={{ consul_service_name }} state=started enabled=yes
