@@ -47,6 +47,6 @@ consul_ui: true
 
 # Retry join addresses (empty by default, to be filled with other nodes)
 consul_retry_join:
-  - "192.168.1.10"
-  - "192.168.1.11"
-  - "192.168.1.12"
+  - "172.21.179.11"
+  - "172.21.179.12"
+  - "172.21.179.13"
