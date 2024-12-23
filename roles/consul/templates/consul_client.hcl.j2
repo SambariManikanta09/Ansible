@@ -6,7 +6,7 @@ datacenter = "dc1"
 
 # Networking Configuration
 bind_addr = "0.0.0.0"   # Listen on all network interfaces
-advertise_addr = {{ ansible_default_ipv4.address }} 
+advertise_addr = "{{ ansible_default_ipv4.address }}"
 client_addr = "0.0.0.0" # Listen on all available IP addresses
 
 retry_join = {{ consul_retry_join | to_json }}
@@ -37,5 +37,5 @@ log_level = "INFO"          # Log verbosity level
 # Ports Configuration
 ports {
   http  = 8500  # Disable HTTP
-  https = -1 # Use HTTPS on port 8501
+  # https = -1 # Use HTTPS on port 8501
 }
