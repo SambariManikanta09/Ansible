@@ -15,14 +15,14 @@ ports {
 }
 
 # TLS configuration
-tls {
-  http = true
-  rpc  = true
+#tls {
+#  http = true
+#  rpc  = true
 
-  ca_file   = "/etc/nomad.d/tls/ca_cert.pem"
-  cert_file = "/etc/nomad.d/tls/server_cert.pem"
-  key_file  = "/etc/nomad.d/tls/server_key.pem"
-}
+#  ca_file   = "/etc/nomad.d/tls/ca_cert.pem"
+#  cert_file = "/etc/nomad.d/tls/server_cert.pem"
+#  key_file  = "/etc/nomad.d/tls/server_key.pem"
+#}
 
 # Datacenter configuration
 datacenter = "{{ nomad_datacenter }}"
