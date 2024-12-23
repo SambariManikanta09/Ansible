@@ -87,28 +87,28 @@
   notify: restart nomad
   when: inventory_hostname in groups['nomad_clients']
 
-- name: Ensure /etc/nomad.d/tls/ directory exists
-  file:
-    path: /etc/nomad.d/tls/
-    state: directory
-    owner: nomad
-    group: nomad
-    mode: '0755'  
+# - name: Ensure /etc/nomad.d/tls/ directory exists
+#   file:
+#     path: /etc/nomad.d/tls/
+#     state: directory
+#     owner: nomad
+#     group: nomad
+#     mode: '0755'  
 
-- name: Generate self-signed TLS certificates
-  command: >
-    openssl req -newkey rsa:2048 -nodes -keyout /etc/nomad.d/tls/server_key.pem
-    -x509 -days 365 -out /etc/nomad.d/tls/server_cert.pem
-    -subj "/C=US/ST=State/L=City/O=Organization/OU=IT/CN={{ inventory_hostname }}"
-    -CAfiles files/ca_cert.pem -CAkey files/ca_key.pem -set_serial 01
+# - name: Generate self-signed TLS certificates
+#   command: >
+#     openssl req -newkey rsa:2048 -nodes -keyout /etc/nomad.d/tls/server_key.pem
+#     -x509 -days 365 -out /etc/nomad.d/tls/server_cert.pem
+#     -subj "/C=US/ST=State/L=City/O=Organization/OU=IT/CN={{ inventory_hostname }}"
+#     -CAfiles files/ca_cert.pem -CAkey files/ca_key.pem -set_serial 01
 
-- name: Copy CA certificate
-  copy:
-    src: files/ca_cert.pem
-    dest: /etc/nomad.d/tls/ca_cert.pem
-    owner: nomad
-    group: nomad
-    mode: "0644"
+# - name: Copy CA certificate
+#   copy:
+#     src: files/ca_cert.pem
+#     dest: /etc/nomad.d/tls/ca_cert.pem
+#     owner: nomad
+#     group: nomad
+#     mode: "0644"
 
 - name: Ensure Nomad service is started and enabled on boot
   service: name={{ nomad_service_name }} state=started enabled=yes
