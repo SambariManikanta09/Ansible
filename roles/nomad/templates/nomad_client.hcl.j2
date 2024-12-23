@@ -2,7 +2,8 @@
 data_dir = "/etc/nomad.d/data"
 
 # Address Nomad should bind to (use node IP)
-bind_addr = "{{ ansible_default_ipv4.address }}"
+# bind_addr = "{{ ansible_default_ipv4.address }}"
+bind_addr = "{{ nomad_bind_addr }}"
 
 # Client configuration
 client {
@@ -13,10 +14,7 @@ client {
 
   # Additional options for the client
   options = {
-    "env.JAVA_HOME" = "{{ nomad_clients_java_versions[java_version] }}"
-    "driver.raw_exec.enable" = "true"
-    "driver.docker.enable" = "true"
-    "driver.docker.bin_dir" = "/usr/bin"
+    "driver.allowlist" = "exec,java,raw_exec,docker"
   }
 }
 
@@ -56,7 +54,7 @@ config {
 
 # Consul integration
 consul {
-  address = "https://127.0.0.1:8501"
+  address = "http://127.0.0.1:8500"
   auto_advertise = true
   server_auto_join = true
   server_service_name = "nomad-server"

@@ -28,7 +28,7 @@ ports {
 datacenter = "{{ nomad_datacenter }}"
 
 # Logging configuration
-log_level = "INFO"
+log_level = {{ nomad_log_level }}
 log_file  = "/etc/nomad.d/nomad.log"
 
 # Server & Raft configuration
@@ -51,7 +51,7 @@ acl {
 
 # Consul integration
 consul {
-  address = "https://127.0.0.1:8501"
+  address = "http://127.0.0.1:8500"
   auto_advertise = true
   server_auto_join = true
   server_service_name = "nomad-server"
