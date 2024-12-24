@@ -47,7 +47,7 @@ all:
           ansible_host: 172.21.179.23
           java_version: "21"
           role_type: "client"
-          classname: worker
+          class_name: worker
         nomad-client-4:
           ansible_host: 172.21.179.15
           java_version: "21"
@@ -82,4 +82,10 @@ all:
           role_type: "client"
         consul-client-3:
           ansible_host: 172.21.179.23
+          role_type: "client"
+        consul-client-4:
+          ansible_host: 172.21.179.15
+          role_type: "client"
+        consul-client-5:
+          ansible_host: 172.21.179.16
           role_type: "client"
