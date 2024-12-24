@@ -40,12 +40,12 @@ all:
           class_name: worker
         nomad-client-2:
           ansible_host: 172.21.179.22
-          java_version: "21"
+          java_version: "17"
           role_type: "client"
           class_name: worker
         nomad-client-3:
           ansible_host: 172.21.179.23
-          java_version: "21"
+          java_version: "17"
           role_type: "client"
           class_name: worker
         nomad-client-4:
