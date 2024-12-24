@@ -44,8 +44,6 @@ telemetry {
   collection_interval = "1s"
 }
 
-
-
 # Logging configuration for Prometheus/Grafana compatibility
 log_level = "{{ nomad_log_level | default('INFO') }}"
 log_file = "/var/log/nomad/client.log"
@@ -53,6 +51,12 @@ log_file = "/var/log/nomad/client.log"
 plugin "cni" {
 config {
   cni_path = "/opt/cni/bin"
+  }
+}
+
+plugin "raw_exec" {
+  config {
+    enabled = true
   }
 }
 
