@@ -14,6 +14,10 @@ all:
           ansible_host: 172.21.179.22
         vm6:
           ansible_host: 172.21.179.23
+        vm7:
+          ansible_host: 172.21.179.15
+        vm8:
+          ansible_host: 172.21.179.16
 
     nomad_servers:
       hosts:
@@ -33,14 +37,28 @@ all:
           ansible_host: 172.21.179.21
           java_version: "17"
           role_type: "client"
+          class_name: worker
         nomad-client-2:
           ansible_host: 172.21.179.22
           java_version: "21"
           role_type: "client"
+          class_name: worker
         nomad-client-3:
           ansible_host: 172.21.179.23
           java_version: "21"
           role_type: "client"
+          classname: worker
+        nomad-client-4:
+          ansible_host: 172.21.179.15
+          java_version: "21"
+          role_type: "client"
+          class_name: camunda
+        nomad-client-5:
+          ansible_host: 172.21.179.16
+          java_version: "21"
+          role_type: "client"
+          class_name: elastic-search
+
 
     consul_servers:
       hosts:

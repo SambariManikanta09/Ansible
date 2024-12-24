@@ -10,6 +10,7 @@ bind_addr = "{{ nomad_bind_addr }}"
 # Client configuration
 client {
   enabled = true
+  node_class = "{{ hostvars[inventory_hostname]['class_name'] }}"
   server_join {
     retry_join = {{ nomad_retry_join | to_json }}
   }

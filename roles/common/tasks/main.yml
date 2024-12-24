@@ -15,13 +15,8 @@
         state: present
         update_cache: true
 
-    - name: Ensure Java 17 directory exists
-      file:
-        path: "{{ nomad_clients_java_versions['17'] }}"
-        state: directory
-    
     - name: Find the exact Java 17 directory
-      command: ls -d /usr/lib/jvm/java-17-openjdk-*
+      shell: ls -d /usr/lib/jvm/java-17-openjdk-*
       register: java_17_path
       changed_when: false
 
@@ -31,13 +26,8 @@
         src: "{{ java_17_path.stdout }}"
         state: link
 
-    - name: Ensure Java 21 directory exists
-      file:
-        path: "{{ nomad_clients_java_versions['21'] }}"
-        state: directory
-
     - name: Find the exact Java 21 directory
-      command: ls -d /usr/lib/jvm/java-21-openjdk-*
+      shell: ls -d /usr/lib/jvm/java-21-openjdk-*
       register: java_21_path
       changed_when: false
 
