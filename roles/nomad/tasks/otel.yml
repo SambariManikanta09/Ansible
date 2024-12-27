@@ -1,0 +1,13 @@
+- name: Download opentelemetry-javaagent.jar on Nomad Clients
+  hosts: nomad_clients
+  become: yes
+  tasks:
+    - name: Create otel directory if not exists
+      file:
+        path: "{{ otel_jar_dir }}"
+        state: directory
+
+    - name: Download opentelemetry-javaagent.jar
+      get_url:
+        url: "https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.10.0/opentelemetry-javaagent.jar"
+        dest: "/opt/otel/opentelemetry-javaagent.jar"

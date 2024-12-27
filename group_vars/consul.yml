@@ -5,6 +5,9 @@ consul_version: "1.20.1"
 # Consul Download url
 consul_url: https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip
 
+# Specify the datacenter the agent is a member of
+consul_datacenter: jeddah
+
 #temporary download location
 consul_download_dir: /tmp
 

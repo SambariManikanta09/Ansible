@@ -1,7 +1,7 @@
 # Server Configuration
 server = true
 bootstrap_expect = {{ consul_bootstrap_expect }}
-datacenter = "dc1"
+datacenter = "{{ consul_datacenter }}"
 
 # Networking Configuration
 addresses {

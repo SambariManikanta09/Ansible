@@ -55,7 +55,7 @@ nomad_server: true
 nomad_bootstrap_expect: 3
 
 # Specify the datacenter the agent is a member of
-nomad_datacenter: dc1
+nomad_datacenter: jeddah
 
 # Retry join addresses for Nomad cluster (add more nodes here)
 nomad_retry_join:
@@ -69,6 +69,11 @@ nomad_client_servers:
   - "172.21.179.21"
   - "172.21.179.22"
   - "172.21.179.23"
+  - "172.21.179.15"
+  - "172.21.179.16"
 
 # Log level for Nomad
 nomad_log_level: "INFO"
+
+#Otel 
+otel_jar_dir: /opt/otel
